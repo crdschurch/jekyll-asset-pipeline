@@ -1,3 +1,5 @@
+require 'jekyll'
+
 require 'jekyll-asset-pipeline/version'
 require 'jekyll-asset-pipeline/hooks'
 
