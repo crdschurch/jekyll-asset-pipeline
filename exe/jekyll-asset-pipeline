@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'jekyll-asset-pipeline/installer'
+
+Jekyll::AssetPipeline::Installer.run!

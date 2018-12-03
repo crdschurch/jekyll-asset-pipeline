@@ -1,5 +1,0 @@
-#!/usr/bin/env ruby
-
-# require 'jekyll-asset-pipeline'
-
-puts '--- HELLO ---'
