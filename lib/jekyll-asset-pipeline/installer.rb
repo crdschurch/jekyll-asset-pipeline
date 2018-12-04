@@ -23,7 +23,8 @@ class Jekyll::AssetPipeline::Installer
     init_package_json
     install_npm_packages
     add_build_script
-    copy_build_file
+    copy_gulp_config
+    copy_purgecss_config
     output('--- Done! jekyll-asset-pipeline install successfully! ---', :green)
   end
 
@@ -58,8 +59,12 @@ class Jekyll::AssetPipeline::Installer
     File.open(package_json_file, 'w+') { |f| f.write(config.to_json) }
   end
 
-  def copy_build_file
+  def copy_gulp_config
     template(File.expand_path('../templates/gulpfile.js', __dir__), "#{FileUtils.pwd}/gulpfile.js")
+  end
+
+  def copy_purgecss_config
+    template(File.expand_path('../templates/purgecss.config.json', __dir__), "#{FileUtils.pwd}/purgecss.config.json")
   end
 
   def package_json_file
