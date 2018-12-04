@@ -68,7 +68,7 @@ module Jekyll
 
       # Copy a template from src (this project) to dest (Jekyll project).
       def template(src, dest)
-        FileUtils.cp(src, dest)
+        FileUtils.cp(src, dest, preserve: true)
       end
 
       # ---------------------------------------- | Actions
@@ -93,7 +93,7 @@ module Jekyll
       def add_build_script
         config = JSON.parse(File.read(package_json_file))
         (config['scripts'] ||= {})['build'] = 'gulp'
-        File.open(package_json_file, 'w+') { |f| f.write(config.to_json) }
+        File.open(package_json_file, 'w+') { |f| f.write(JSON.pretty_generate(config)) }
       end
 
       # Copy gulpfile.js into the root of the project.
