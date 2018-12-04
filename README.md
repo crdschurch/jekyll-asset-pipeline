@@ -1,14 +1,13 @@
 # Jekyll::AssetPipeline
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/jekyll/asset/pipeline`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem is an external asset pipeline for Jekyll projects. It supports [Sass](https://sass-lang.com/) for CSS, and ES6 for JavaScript (via [Babel](https://babeljs.io/)). It also runs [PurgeCSS](https://www.purgecss.com/) to remove unnecessary CSS and [Uglify](https://github.com/mishoo/UglifyJS2) to compress JavaScript.
 
-TODO: Delete this and the text above, and describe your gem
+Installation
+----------
 
-## Installation
+Add this line to your application's `Gemfile`:
 
-Add this line to your application's Gemfile:
-
-```ruby
+```rb
 gem 'jekyll-asset-pipeline'
 ```
 
@@ -16,24 +15,107 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
+After the gem is installed you can run the command-line install script to finish the installation process:
 
-    $ gem install jekyll-asset-pipeline
+    $ bundle exec jekyll-asset-pipeline install
 
-## Usage
+This script does the following:
 
-TODO: Write usage instructions here
+- Installs `purgecss` globally via NPM.
+- Installs local JS package dependencies, which will create a `package.json` file if it doesn't already exit.
+- Copies `gulpfile.js` into the project root. This is the configuration for the build process, which you're welcome to customize as necessary.
+- Copies `purgecss.config.json` into the project root. This is the configuration for PurgeCSS, which you are also welcome to customize as necessary.
 
-## Development
+The process will also likely create a `package-lock.json` file and a `node_modules` directory. It is recommended that you add the `node_modules` directory to your `.gitignore` file.
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Introduction
+----------
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+The build process has three primary components:
 
-## Contributing
+1. [Gulp.js](https://gulpjs.com/): The build process. The build logic and configuration can be found in `gulpfile.js`, which is copied into the root of your project during installation.
+2. A series of Jekyll hooks that control when (and whether or not) to run the asset build when the jekyll build is run.
+3. Jekyll tags to support resolving the appropriate filename for your `<link>` and `<script>` tags.
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/jekyll-asset-pipeline. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Usage
+----------
 
-## Code of Conduct
+The build is run via Gulp.js (which is run via an NPM script). This occurs automatically as part of the Jekyll build process (`jekyll build` or `jekyll serve`).
 
-Everyone interacting in the Jekyll::Asset::Pipeline project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/jekyll-asset-pipeline/blob/master/CODE_OF_CONDUCT.md).
+The build uses `_assets/stylesheets` as the source directory for (S)CSS files and `_assets/javascripts` as the source for JS files. (More on each of these in their respective sections, below.)
+
+The build will run if any of the following conditions are true:
+
+- `BUILD_ASSETS` environment variable is set to `true` (i.e. `BUILD_ASSETS=true jekyll [build/serve]`).
+- The hash file (used to reference the last used hash) does not exist. (More on this below.)
+- There are no `.js` or `.css` files in the build directory.
+- A `.js` or `.scss` file within the source directory has been modified since the last time the build was run.
+
+### Liquid/HTML Tags
+
+Within a Jekyll view (HTML file), you can use the custom tags to load the appropriate file(s):
+
+```liquid
+{% javascript_link_tag application %}
+{% stylesheet_link_tag application %}
+```
+
+_Notice the lack of file extension._
+
+### Configuration
+
+Aside from the environment variable mentioned above, you have the option to adjust one value in your site's `_config.yml` file.
+
+- `asset_dest` (default: `assets`): The directory within your build directory in which to house the built assets.
+
+CSS
+----------
+
+The CSS builds one sass source file (`_assets/stylesheets/application.scss`) and puts the compiled output in `_site/assets/`. There is nothing to configure, as Sass supports importing partials by default.
+
+JavaScript
+----------
+
+JavaScript is more configurable that the CSS. All JS build configuration can be found in `_assets/javascripts/config.js`. This file is to export an array of config objects, where each object represents a built file with the following options:
+
+- `name` (Required): The name of the file (sans `.js` extension).
+- `deps`: An array of vendors files (dependencies, sans `.js` extension) to prepend to the built file.
+- `files`: An array of files (sans `.js` extension) to process with Babel and then append to the built file.
+
+The resulting file(s) will be placed in `_site/assets/`.
+
+Take the following example:
+
+```js
+module.exports = [
+  {
+    name: 'application',
+    deps: [
+      'vendor/jquery.min',
+      'vendor/lodash.min'
+    ],
+    files: [
+      'components/header'
+    ]
+  }
+]
+```
+
+Given the config above, `_assets/javascripts/vendor/jquery.min.js` (notice `.js` extension is automatically added) and `_assets/javascripts/vendor/lodash.min.js` will be prepended to a temporary file, while `_assets/javascripts/components/header.js` will be processed with Babel (to support older browsers), minified, and appended to the same file. This file will eventually become named `application.js` (because of the `name` option in the config) and will be placed in `_site/assets/`.
+
+The Cache Hash
+----------
+
+This build process supports appending a cache hash to the end of each file. This will happen automatically if you let the Jekyll hooks build the project. This hash will also be used with the Jekyll tags so that your view files load the appropriate files.
+
+If you are building via the command line, you can set the `ASSET_HASH` environment variable to add a hash.
+
+Contributing
+----------
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/crdschurch/jekyll-asset-pipeline. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
+Code of Conduct
+----------
+
+Everyone interacting in the Jekyll::Asset::Pipeline project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/crdschurch/jekyll-asset-pipeline/blob/master/CODE_OF_CONDUCT.md).
