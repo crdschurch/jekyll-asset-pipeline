@@ -43,7 +43,7 @@ module Jekyll
       #
       def run_build
         return unless config('build_assets')
-        %w{js css}.each { |ext| FileUtils.rm(Dir.glob("#{build_dir}/**/*.#{ext}")) }
+        %w{js css}.each { |ext| FileUtils.rm(Dir.glob("#{build_dir}/*.#{ext}")) }
         system("ASSET_HASH=#{config('asset_hash')} npm run build")
         File.open(hash_file, 'w+') { |f| f.write(config('asset_hash')) }
       end
