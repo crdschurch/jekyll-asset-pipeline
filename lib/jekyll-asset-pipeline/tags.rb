@@ -5,7 +5,7 @@ module Jekyll
 
       def initialize(tag_name, input, tokens)
         super
-        @input = input
+        @input = input.split(' ').map(&:strip).compact
       end
 
       private
@@ -15,8 +15,8 @@ module Jekyll
       end
 
       def file_path(context, ext)
-        filename = lookup_variable(context, @input.strip)
-        file_path = "/#{site.config['asset_dest']}/#{filename.strip}-#{site.config['asset_hash']}.#{ext}"
+        filename = lookup_variable(context, @input.first).strip
+        file_path = "/#{site.config['asset_dest']}/#{filename}-#{site.config['asset_hash']}.#{ext}"
       end
     end
 
@@ -28,7 +28,7 @@ module Jekyll
 
     class JavascriptLinkTag < Tag
       def render(context)
-        "<script async type=\"text/javascript\" src=\"#{file_path(context, 'js')}\"></script>"
+        "<script async type=\"text/javascript\" src=\"#{file_path(context, 'js')}\" #{@input[1]}></script>"
       end
     end
   end

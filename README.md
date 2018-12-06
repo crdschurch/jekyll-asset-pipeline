@@ -62,6 +62,8 @@ Within a Jekyll view (HTML file), you can use the custom tags to load the approp
 
 _Notice the lack of file extension._
 
+The `javascript_link_tag` accepts a second argument for which you can add an `async` or `defer` attribute to the script tag.
+
 ### Configuration
 
 Aside from the environment variable mentioned above, you have the option to adjust one value in your site's `_config.yml` file.
