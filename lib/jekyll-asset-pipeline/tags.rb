@@ -16,7 +16,7 @@ module Jekyll
 
       def file_path(context, ext)
         filename = lookup_variable(context, @input.first).strip
-        file_path = "/#{site.config['asset_dest']}/#{filename}-#{site.config['asset_hash']}.#{ext}"
+        "/#{site.config['asset_dest']}/#{filename}-#{site.config['asset_hash']}.#{ext}"
       end
     end
 
