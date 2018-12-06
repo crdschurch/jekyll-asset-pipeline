@@ -75,7 +75,10 @@ module Jekyll
         end
 
         def hash_file
-          @hash_file ||= 'tmp/.asset_hash'
+          @hash_file ||= begin
+            FileUtils.mkdir('tmp') unless Dir.exists?('tmp')
+            'tmp/.asset_hash'
+          end
         end
 
         def build_dir
