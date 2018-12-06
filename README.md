@@ -8,16 +8,12 @@ Installation
 Add this line to your application's `Gemfile`:
 
 ```rb
-gem 'jekyll-asset-pipeline'
+gem 'jekyll-asset-pipeline', git: 'https://github.com/crdschurch/jekyll-asset-pipeline', tag: '0.0.1'
 ```
 
 And then execute:
 
-    $ bundle
-
-After the gem is installed you can run the command-line install script to finish the installation process:
-
-    $ bundle exec jekyll-asset-pipeline install
+    $ bundle install
 
 This script does the following:
 
