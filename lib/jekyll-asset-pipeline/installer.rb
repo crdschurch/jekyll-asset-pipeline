@@ -86,7 +86,7 @@ module Jekyll
       # Install all necessary global and local JS dependencies.
       def install_npm_packages
         system("npm install --global purgecss")
-        system("npm install --save-dev @babel/core @babel/preset-env crds-styles del gulp gulp-babel gulp-concat gulp-plumber gulp-rename gulp-sass gulp-uglify node-sass-tilde-importer")
+        system("npm install --save-dev @babel/core @babel/preset-env crds-styles del gulp@4.0.0 gulp-babel gulp-concat gulp-plumber gulp-rename gulp-sass gulp-uglify node-sass-tilde-importer")
       end
 
       # Add build script to package.json file and write to file.
