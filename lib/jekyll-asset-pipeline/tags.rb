@@ -28,7 +28,7 @@ module Jekyll
 
     class JavascriptLinkTag < Tag
       def render(context)
-        "<script async type=\"text/javascript\" src=\"#{file_path(context, 'js')}\" #{@input[1]}></script>"
+        "<script type=\"text/javascript\" src=\"#{file_path(context, 'js')}\" #{@input[1]}></script>"
       end
     end
   end
