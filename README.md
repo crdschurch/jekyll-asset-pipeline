@@ -13,7 +13,7 @@ gem 'jekyll-asset-pipeline', git: 'https://github.com/crdschurch/jekyll-asset-pi
 
 And then execute:
 
-    $ bundle install
+    $ bundle exec jekyll-asset-pipeline install
 
 This script does the following:
 
