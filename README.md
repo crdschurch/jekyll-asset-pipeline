@@ -108,6 +108,14 @@ This build process supports appending a cache hash to the end of each file. This
 
 If you are building via the command line, you can set the `ASSET_HASH` environment variable to add a hash.
 
+Troubleshooting
+----------
+
+If you start the Jekyll server and there are missing styles or your scripts are working, it's likely that the Jekyll asset tags are looking for a different filename than what exists in your build directory (`_site`, by default). There are two quick options to fix:
+
+1. Delete the build directory and restart the server (or re-run the build).
+2. Save a file in your assets source directory. The next time the project builds (which would be instantaneously if the server is already running) the assets will regenerate.
+
 Contributing
 ----------
 
