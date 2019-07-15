@@ -31,10 +31,10 @@ module Jekyll
       def init_build
         if run_build?
           config('build_assets', true, true)
-          config('asset_hash', ENV['ASSET_HASH'] || SecureRandom.hex(12), true)
+          # config('asset_hash', ENV['ASSET_HASH'] || SecureRandom.hex(12), true)
         else
           config('build_assets', false, true)
-          config('asset_hash', File.read(hash_file), true)
+          # config('asset_hash', File.read(hash_file), true)
         end
       end
 
@@ -44,8 +44,8 @@ module Jekyll
       def run_build
         return unless config('build_assets')
         %w{js css}.each { |ext| FileUtils.rm(Dir.glob("#{build_dir}/*.#{ext}")) }
-        system("ASSET_HASH=#{config('asset_hash')} npm run build")
-        File.open(hash_file, 'w+') { |f| f.write(config('asset_hash')) }
+        system("npm run build")
+        # File.open(hash_file, 'w+') { |f| f.write(config('asset_hash')) }
       end
 
       private
