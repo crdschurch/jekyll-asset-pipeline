@@ -31,7 +31,7 @@ module Jekyll
       def init_build
         if run_build?
           config('build_assets', true, true)
-          config('asset_hash', SecureRandom.hex(12), true)
+          config('asset_hash', ENV['ASSET_HASH'] || SecureRandom.hex(12), true)
         else
           config('build_assets', false, true)
           config('asset_hash', File.read(hash_file), true)
