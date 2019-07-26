@@ -41,7 +41,7 @@ module Jekyll
         return unless config('build_assets')
         %w{js css}.each { |ext| FileUtils.rm(Dir.glob("#{build_dir}/*.#{ext}")) }
         system("npm run build")
-         File.open(cache_file, 'w+') { |f| f.write('') }
+        File.open(cache_file, 'w+') { |f| f.write('') }
       end
 
       private
