@@ -24,28 +24,24 @@ module Jekyll
       end
 
       # If we're ready to build (see `run_build?` below), use "build_assets" on
-      # the site as the means for determining what to build and "asset_hash" as
-      # the value to use for the hash. (If we don't need to run the build, we
-      # preload the last hash used.)
+      # the site as the means for determining what to build.
       #
       def init_build
         if run_build?
           config('build_assets', true, true)
-          # config('asset_hash', ENV['ASSET_HASH'] || SecureRandom.hex(12), true)
         else
           config('build_assets', false, true)
-          # config('asset_hash', File.read(hash_file), true)
         end
       end
 
       # If "build_assets" is set, then we are ready to do a build. Delete all the
-      # existing build files, run the build, themn write the hash file reference.
+      # existing build files, then run the build.
       #
       def run_build
         return unless config('build_assets')
         %w{js css}.each { |ext| FileUtils.rm(Dir.glob("#{build_dir}/*.#{ext}")) }
         system("npm run build")
-        # File.open(hash_file, 'w+') { |f| f.write(config('asset_hash')) }
+         File.open(cache_file, 'w+') { |f| f.write('') }
       end
 
       private
@@ -58,26 +54,24 @@ module Jekyll
         # Run the build if any of the following are true:
         #
         #   - BUILD_ASSETS env var is set to true.
-        #   - The hash file (used to reference the last used hash) does not exist.
         #   - There are no .js or .css files in the build directory.
-        #   - Any source asset has been manipulated since the hash file was
+        #   - Any source asset has been manipulated since the cache file was
         #     written.
         #
         def run_build?
           ENV['BUILD_ASSETS'].to_s == 'true' ||
-            !File.exists?(hash_file) ||
             build_files.blank? ||
-            src_files.select { |f| File.mtime(f) >= File.mtime(hash_file) }.any?
+            src_files.select { |f| File.mtime(f) >= File.mtime(cache_file) }.any?
         end
 
         def development?
           (ENV['JEKYLL_ENV'] ||= 'development') == 'development'
         end
 
-        def hash_file
-          @hash_file ||= begin
+        def cache_file
+          @cache_file ||= begin
             FileUtils.mkdir('tmp') unless Dir.exists?('tmp')
-            'tmp/.asset_hash'
+            'tmp/.asset_cache'
           end
         end
 

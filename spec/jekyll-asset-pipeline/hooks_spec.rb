@@ -19,10 +19,4 @@ RSpec.describe 'Jekyll::AssetPipeline::Hooks' do
     expect(@site.config['build_assets']).to eq(true)
   end
 
-  it 'stores a reference to the hash file' do
-    expect(@site.config['asset_hash']).to eq(nil)
-    @hook.init_build
-    expect(@site.config['asset_hash']).to_not eq(nil)
-  end
-
 end
