@@ -43,7 +43,6 @@ The build uses `_assets/stylesheets` as the source directory for (S)CSS files an
 The build will run if any of the following conditions are true:
 
 - `BUILD_ASSETS` environment variable is set to `true` (i.e. `BUILD_ASSETS=true jekyll [build/serve]`).
-- The hash file (used to reference the last used hash) does not exist. (More on this below.)
 - There are no `.js` or `.css` files in the build directory.
 - A `.js` or `.scss` file within the source directory has been modified since the last time the build was run.
 
@@ -100,13 +99,6 @@ module.exports = [
 ```
 
 Given the config above, `_assets/javascripts/vendor/jquery.min.js` (notice `.js` extension is automatically added) and `_assets/javascripts/vendor/lodash.min.js` will be prepended to a temporary file, while `_assets/javascripts/components/header.js` will be processed with Babel (to support older browsers), minified, and appended to the same file. This file will eventually become named `application.js` (because of the `name` option in the config) and will be placed in `_site/assets/`.
-
-The Cache Hash
-----------
-
-This build process supports appending a cache hash to the end of each file. This will happen automatically if you let the Jekyll hooks build the project. This hash will also be used with the Jekyll tags so that your view files load the appropriate files.
-
-If you are building via the command line, you can set the `ASSET_HASH` environment variable to add a hash.
 
 Troubleshooting
 ----------
