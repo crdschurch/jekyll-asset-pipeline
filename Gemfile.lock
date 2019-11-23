@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jekyll-asset-pipeline (0.1.0)
+    jekyll-asset-pipeline (1.0.0)
       activesupport
       jekyll (~> 4.0.0)
 
@@ -104,4 +104,4 @@ DEPENDENCIES
   rspec (~> 3.0)
 
 BUNDLED WITH
-   2.0.1
+   2.0.2
